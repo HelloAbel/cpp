@@ -15,9 +15,22 @@ progress_timer: boost/progress.hpp
         }
         cout << ss.str();
 
+
 progress_display: boost/progress.hpp
     progress_display是一个可以显示当前程序执行进度的类，每走2%打印一个*，在需要打印进度的程序中调用重载过的++操作即可。
     注意：progress_display可以用作基本的进度显示，但是如果程序本身也有输出的话会和进度条发生混乱，一个可能的解决办法是在每次
 显示进度的时候都调用progress_display类里面的restart()方法重新显示进度刻度，然后用重载过的+=操作符来指定当前进度，如下所示：
     pd.restart(v.size());
     pd += (pos - v.begin() + 1);
+
+
+date_time: boost/date_time/gregorian/gregorian.hpp   boost/date_time/posix_time/posix_time.hpp
+    date_time库需要编译才能使用，在jamfile里指定lib的语句是lib boost_date_time。
+    处理日期的命名空间为boost::gregorian，支持的日期为1400-01-01到9999-12-31，处理时间的命名空间为boost::posix_time。
+    date_time库中支持无限时间和无效时间，用枚举special_values定义了这些特殊的时间概念，它位于命名空间boost::date_time，并被
+using语句引入其他子命名空间。其内容为：pos_infin --> 正无限时间；neg_infin --> 负无限时间；not_a_date_time --> 无效时间；
+min_date_time --> 最小日期或时间；max_date_time --> 最大日期或时间。
+    日期相关：
+        处理日起的核心类是date，使用一个32位整数作为内部存储。date创建时如果参数为空，会创建一个not_a_date_time的无效时间，为了
+    避免创建这种无效时间，可以在包含头文件前定义宏DATE_TIME_NO_DEFAULT_CONSTRUCTOR来禁止默认构造函数。
+        创建对象时如果使用了非法的值，date_time库会抛出异常，而不是转换为一个无效日期，可以使用what()查看具体的错误信息。
