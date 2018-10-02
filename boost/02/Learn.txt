@@ -1,4 +1,4 @@
-timer：
+timer：boost/timer.hpp
     timer的计时使用了标准库头文件中<ctime>里的std::clock()函数，它返回自进程启动以来的clock数，每秒的clock数则由宏
 CLOCKS_PER_SEC定义。CLOCKS_PER_SEC与操作系统有关，在linux和mac下为1 000 000，在windows下为1 000，也就是说在linux
 和mac下的计时精度为微妙，windows下为毫秒。
@@ -6,5 +6,18 @@ CLOCKS_PER_SEC定义。CLOCKS_PER_SEC与操作系统有关，在linux和mac下�
 需要以天、月甚至年作为时间的单位则不能使用timer，应使用以后学的cpu_timer组件。
 
 
-progress_timer:
+progress_timer: boost/progress.hpp
     progress_timer是一个派生自timer的计时器，会在析构时自动输出时间，省去了timer手动调用elapsed的工作。
+    progress_timer可以通过构造时指定输出流来使用，比如下面的代码：
+        stringstream ss;
+        {
+            progress_timer t(ss);   //progress_timer将时间输出到字符串流中
+        }
+        cout << ss.str();
+
+progress_display: boost/progress.hpp
+    progress_display是一个可以显示当前程序执行进度的类，每走2%打印一个*，在需要打印进度的程序中调用重载过的++操作即可。
+    注意：progress_display可以用作基本的进度显示，但是如果程序本身也有输出的话会和进度条发生混乱，一个可能的解决办法是在每次
+显示进度的时候都调用progress_display类里面的restart()方法重新显示进度刻度，然后用重载过的+=操作符来指定当前进度，如下所示：
+    pd.restart(v.size());
+    pd += (pos - v.begin() + 1);
