@@ -144,6 +144,73 @@ int main()
   d21-=months(1); //2017-1-31
   d21+=months(2); //2017-3-31，与原来的2017-3-30不相等
   assert(d21.day()==31);
+
+
+  //日期区间
+  date_period dp1(date(2017,1,1), days(20)); //从2017-1-1开始的20天的一个区间
+
+  assert(!dp1.is_null()); //如果构造时使用了左大右小的端点或者日期长度为0,那么is_null返回true
+  assert(dp1.begin().day()==1); //begin返回构造时左边的日期
+  assert(dp1.last().day()==20); //last返回截止日期
+  assert(dp1.end().day()==21); //end返回last后一天
+  assert(dp1.length().days() == 20); //length返回日期区间的长度，以天为单位
+
+  cout << dp1 << endl; //默认输入输出格式为[YYYY-mmm-DD/YYYY-mmm-DD]形式的字符串
+
+  dp1.shift(days(3)); //将日期区间平移3天，长度不变
+  assert(dp1.begin().day()==4);
+  assert(dp1.length().days()==20);
+
+  dp1.expand(days(3)); //将日期区间向两端延伸3天，相当于区间长度加6天
+  assert(dp1.begin().day()==1);
+  assert(dp1.length().days()==26);
+
+  assert(dp1.is_after(date(2009,12,1))); //判断区间是否在某个日期后面
+  assert(dp1.is_before(date(2018,10,4))); //判断区间是否在某个日期前面
+  assert(dp1.contains(date(2017,1,10))); //判断区间是否包含另一个区间或日期
+
+  date_period dp2(date(2017,1,5), days(10));
+
+  assert(dp1.intersects(dp2)); //判断两个区间是否有交集
+  assert(dp1.intersection(dp2)==dp2); //intersection返回两个区间的交集，如果无交集返回一个无效区间
+
+  date_period dp3(date(2017,1,27), days(5));
+
+  assert(dp1.is_adjacent(dp3)); //判断两个区间是否相邻
+
+
+  date_period dp4(date(2010,1,1), days(20));
+  date_period dp5(date(2010,1,5), days(10));
+  date_period dp6(date(2010,2,1), days(5));
+  date_period dp7(date(2010,1,15), days(10));
+
+  assert(dp1.contains(dp2) && dp1.merge(dp2)==dp1); //merge取两个区间的并集，如果区间无交集或者不相邻则返回无效区间
+  assert(dp1.span(dp3).end()==dp3.end()); //span合并两个区间及两者间的间隔，相当于广义的merge
+
+
+
+  //日期迭代器
+  date d22(2007,9,28);
+  day_iterator d_iter(d22); //增减步长默认为1天
+
+  assert(d_iter==d22); //不需要解引用就可以直接与日期进行比较
+  ++d_iter;
+  assert(d_iter==date(2007,9,29));
+
+  year_iterator y_iter(*d_iter, 10); //增减步长为10年，解引用day_iterator可以得到日期
+  assert(y_iter==d22+days(1));
+  ++y_iter;
+  assert(y_iter->year()==2017);
+
+
+
+  //其他功能
+  typedef gregorian_calendar gre_cal; //格里高利历法
+
+  cout << "Y2017 is"
+       << (gre_cal::is_leap_year(2017)?"":"not")
+       << " a leap year." << endl; //静态函数is_leap_year判断是否是闰年
+  assert(gre_cal::end_of_month_day(2017,2)==28); //end_of_month_day给定年份和月份，返回月末最后一天
   
   return 0;
 }

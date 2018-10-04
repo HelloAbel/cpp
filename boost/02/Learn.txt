@@ -42,3 +42,8 @@ min_date_time --> 最小日期或时间；max_date_time --> 最大日期或时�
     随后的运算就总是月末操作，原来的天数信息就会丢失。使用days类则不会出现这样的问题，如果担心weeks、months、years无意使用而扰乱
     代码，可以undef宏BOOST_DATE_TIME_OPTIOMAL_GREGORIAN_TYPES，这将使date_time库不包含它们的定义头文件<boost/date_time/gregorian/
     greg_duration_types.hpp>
+        date_period类表示一个日期区间，是一个左闭右开的区间，代表从一个日期到另一个日期。date_period可以进行全序比较运算，但比较
+    不是依据日期区间的长度，而是依据区间的端点，判断两个区间在时间轴上的位置大小，如果两个日期区间相交或者包含，那么比较无意义。
+        日期迭代器day_iterator、week_iterator、month_iterator、year_iterator处于运算效率考虑，只提供前置版本的自增操作。但是日期
+    迭代器虽然名字叫迭代器，却并不符合标准迭代器的定义，没有difference_type、pointer、reference等内部类型定义，也不能使用
+    std::advance()或者operator+=来前进或者后退。
