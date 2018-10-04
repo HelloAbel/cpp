@@ -34,3 +34,11 @@ min_date_time --> 最小日期或时间；max_date_time --> 最大日期或时�
         处理日起的核心类是date，使用一个32位整数作为内部存储。date创建时如果参数为空，会创建一个not_a_date_time的无效时间，为了
     避免创建这种无效时间，可以在包含头文件前定义宏DATE_TIME_NO_DEFAULT_CONSTRUCTOR来禁止默认构造函数。
         创建对象时如果使用了非法的值，date_time库会抛出异常，而不是转换为一个无效日期，可以使用what()查看具体的错误信息。
+        日期长度date_duration支持全序比较操作、完全的加减法和递增递减操作，此外还支持除法运算，可以除以一个整数，但不能除以另一
+    个date_duration，其他的数学运算如乘法、取模、取余则不支持。date_time库为date_duration创建了一个typedef: days。
+        date_time库还提供了months、years、weeks三个类，作用与days类似。months和years全面支持加减乘除运算，weeks是days的子类，除
+    了构造函数以7为单位外其他行为与days相同。在运用months、years这两个类进行计算时要注意：如果日期是月末的最后一天，那么加减月或
+    年会得到同样的月末时间，而不是简单的月份或者年份加1,这是合乎常识的，但是如果当天数是月末的28、29时，如果加减月份到2月，那么
+    随后的运算就总是月末操作，原来的天数信息就会丢失。使用days类则不会出现这样的问题，如果担心weeks、months、years无意使用而扰乱
+    代码，可以undef宏BOOST_DATE_TIME_OPTIOMAL_GREGORIAN_TYPES，这将使date_time库不包含它们的定义头文件<boost/date_time/gregorian/
+    greg_duration_types.hpp>
