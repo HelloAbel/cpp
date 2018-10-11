@@ -47,3 +47,7 @@ min_date_time --> 最小日期或时间；max_date_time --> 最大日期或时�
         日期迭代器day_iterator、week_iterator、month_iterator、year_iterator处于运算效率考虑，只提供前置版本的自增操作。但是日期
     迭代器虽然名字叫迭代器，却并不符合标准迭代器的定义，没有difference_type、pointer、reference等内部类型定义，也不能使用
     std::advance()或者operator+=来前进或者后退。
+    时间相关：
+        date_time库在格里高利历法的基础上提供微妙级别的时间系统，但如果需要，它最高可以达到纳秒级别的精度。
+        time_duration支持全序比较操作和输入输出，而且比date_duration支持更多的算术运算，可以进行加减乘除全四则运算。可以转换到tm结构，同样
+    使用to_tm函数，但不能进行反向转换。
