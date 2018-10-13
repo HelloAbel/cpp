@@ -26,7 +26,8 @@ progress_display: boost/progress.hpp
 
 date_time: boost/date_time/gregorian/gregorian.hpp   boost/date_time/posix_time/posix_time.hpp
     date_time库需要编译才能使用，在jamfile里指定lib的语句是lib boost_date_time。
-    处理日期的命名空间为boost::gregorian，支持的日期为1400-01-01到9999-12-31，处理时间的命名空间为boost::posix_time。
+    处理日期的命名空间为boost::gregorian，支持的日期为1400-01-01到9999-12-31，处理时间的命名空间为boost::posix_time，本地
+时间功能位于boost::local_time命名空间，需要包含头文件boost/date_time/local_time/local_time.hpp。
     date_time库中支持无限时间和无效时间，用枚举special_values定义了这些特殊的时间概念，它位于命名空间boost::date_time，并被
 using语句引入其他子命名空间。其内容为：pos_infin --> 正无限时间；neg_infin --> 负无限时间；not_a_date_time --> 无效时间；
 min_date_time --> 最小日期或时间；max_date_time --> 最大日期或时间。
@@ -51,3 +52,8 @@ min_date_time --> 最小日期或时间；max_date_time --> 最大日期或时�
         date_time库在格里高利历法的基础上提供微妙级别的时间系统，但如果需要，它最高可以达到纳秒级别的精度。
         time_duration支持全序比较操作和输入输出，而且比date_duration支持更多的算术运算，可以进行加减乘除全四则运算。可以转换到tm结构，同样
     使用to_tm函数，但不能进行反向转换。
+        date_time库默认的时间精确度是微妙，纳秒相关的类和函数如nanosec和成员函数nanoseconds()、total_nanoseconds()都不可用。当定义了宏
+    BOOST_DATE_TIME_POSIX_TIME_STD_CONFIG时，time_duration的时间分辨率将精确到纳秒，构造函数中秒以下的时间度量单位也会变成纳秒。
+        ptime相当于date+time_duration，可以被高效地任意拷贝赋值，也支持全序比较和加减运算。
+        与日期区间相对应，time_period表示时间区间，用法与date_period基本相同。
+        不同于日期迭代器，时间迭代器只有一个time_iterator。无须解引用也可以直接与ptime比较。
